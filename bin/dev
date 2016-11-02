@@ -34,6 +34,11 @@ init() {
     if [ -n "${DEV_COMMAND}" ] && [ -f "${DEV_COMMAND}" ]; then
         DEV_EXISTS=true;
     fi
+
+    DEV_PLATFORM='linux'
+    if [[ "$(uname)" == 'Darwin' ]]; then
+       DEV_PLATFORM='osx'
+    fi
 }
 
 exec() {
