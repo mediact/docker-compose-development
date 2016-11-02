@@ -46,7 +46,7 @@ RUN echo ";extension=blackfire.so\nblackfire.agent_socket=\${BLACKFIRE_PORT}" > 
     && echo "zend_extension=`ls /usr/local/lib/php/extensions/no-debug-non-zts-*/xdebug.so`" > /usr/local/etc/php/conf.d/xdebug.ini
 
 RUN wget https://getcomposer.org/composer.phar -O /usr/local/bin/composer \
-    && chmod +x /usr/bin/composer
+    && chmod +x /usr/local/bin/composer
 
 COPY etc/php-fpm.conf /usr/local/etc/
 COPY etc/php.ini /usr/local/etc/php/
