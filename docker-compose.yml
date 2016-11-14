@@ -1,10 +1,10 @@
 db:
-    image: percona
+    build: db
     restart: always
     env_file: conf/mysql
 
 dbclient:
-    image: percona
+    build: db
     command: bash
     links:
         - db
