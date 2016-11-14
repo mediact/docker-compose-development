@@ -2,12 +2,16 @@ db:
     image: percona
     restart: always
     env_file: conf/mysql
+    volumes:
+        - ./db/conf.d:/etc/mysql/conf.d
 
 dbclient:
     image: percona
     command: bash
     links:
         - db
+    volumes:
+        - ./db/conf.d:/etc/mysql/conf.d
 
 redis:
     image: redis
