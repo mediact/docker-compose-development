@@ -10,8 +10,6 @@ dbclient:
     command: bash
     links:
         - db
-    volumes:
-        - ./db/conf.d:/etc/mysql/conf.d
 
 redis:
     image: redis
