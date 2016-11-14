@@ -1,12 +1,12 @@
 
 db:
-    image: percona
+    build: db
     restart: always
     volumes:
         - ./mysql:/var/lib/mysql
     env_file: conf/mysql
 dbclient:
-    image: percona
+    build: db
     command: bash
     links:
         - db
