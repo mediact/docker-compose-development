@@ -43,6 +43,9 @@ RUN echo ";extension=blackfire.so\nblackfire.agent_socket=\${BLACKFIRE_PORT}" > 
 RUN wget https://getcomposer.org/composer.phar -O /usr/local/bin/composer \
     && chmod +x /usr/local/bin/composer
 
+RUN wget http://files.magerun.net/n98-magerun.phar -O /usr/bin/n98-magerun \
+    && chmod +x /usr/bin/n98-magerun
+
 COPY etc/php-fpm.conf /usr/local/etc/
 COPY etc/php.ini /usr/local/etc/php/
 RUN chmod ugo+rX -R /usr/local/etc/php
