@@ -1,6 +1,6 @@
 server {
     listen 80;
-    server_name *.silex.dev;
+    server_name *.silex.dev.mediacthq.nl;
 
     include "upstream/php7";
     include "content/silex";
@@ -8,7 +8,7 @@ server {
 
 server {
     listen 443;
-    server_name *.silex.dev;
+    server_name *.silex.dev.mediacthq.nl;
 
     ssl on;
     ssl_certificate certs/server.crt;
@@ -20,7 +20,7 @@ server {
 
 server {
     listen 80;
-    server_name *.silex.php5.dev;
+    server_name *.silex.php5.dev.mediacthq.nl;
 
     include "upstream/php5";
     include "content/silex";
@@ -28,7 +28,7 @@ server {
 
 server {
     listen 443;
-    server_name *.silex.php5.dev;
+    server_name *.silex.php5.dev.mediacthq.nl;
 
     ssl on;
     ssl_certificate certs/server.crt;

@@ -2,7 +2,7 @@
 include "content/vars";
 
 set $mageRunCode "";
-if ( $host ~ "^([^\.]+)\.([^\.]+)\.([^\.]+)\..*\.magento(\.php5)?\.dev$"  ) {
+if ( $host ~ "^([^\.]+)\.([^\.]+)\.([^\.]+)\..*\.magento(\.php5)?\.dev.mediacthq.nl$"  ) {
      set $mageRunCode "$3";
 }
 
