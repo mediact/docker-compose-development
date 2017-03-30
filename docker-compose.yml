@@ -1,4 +1,3 @@
-
 db:
     image: percona
     env_file: conf/mysql
@@ -29,10 +28,8 @@ web:
     build: web
     links:
         - php5:fpm
-
         - php5:fpm5
         - php7:fpm7
-
         - mailcatch
     ports:
         - 127.0.0.1:80:80
