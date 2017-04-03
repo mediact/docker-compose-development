@@ -1,67 +1,37 @@
 db:
     image: percona
-    restart: always
     env_file: conf/mysql
-    volumes:
-        - ./db/conf.d:/etc/mysql/conf.d
-
-dbclient:
-    image: percona
-    command: bash
-    links:
-        - db
+    ports:
+        - 127.0.0.1:3306:3306
 
 redis:
-    image: redis
-    restart: always
+    image: redis:alpine
 
-mailcatcher:
-    image: schickling/mailcatcher
-    restart: always
-
-blackfire:
-    image: blackfire/blackfire
-    restart: always
-    env_file:
-        - conf/blackfire
-
-blackfireclient:
-    image: blackfire/blackfire
-    command: blackfire version
-    net: host
-    env_file:
-        - conf/blackfire
+mailcatch:
+    image: mailhog/mailhog
 
 php5:
     build: php5
-    restart: always
-    volumes:
-        - ${HOME}/.ssh/id_rsa:/data/.ssh/id_rsa:ro
     links:
         - db
-        - mailcatcher
+        - mailcatch
         - redis
-        - blackfire
 
 php7:
     build: php7
-    restart: always
-    volumes:
-        - ${HOME}/.ssh/id_rsa:/data/.ssh/id_rsa:ro
     links:
         - db
-        - mailcatcher
+        - mailcatch
         - redis
-        - blackfire
 
 web:
-    build: nginx
-    restart: always
+    build: web
     links:
         - php5:fpm
         - php5:fpm5
         - php7:fpm7
-        - mailcatcher
+        - mailcatch
     ports:
-        - 80:80
-        - 443:433
+        - 127.0.0.1:80:80
+        - 127.0.0.1:443:443
+

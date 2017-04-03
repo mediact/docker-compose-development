@@ -1,0 +1,11 @@
+
+dc yml 'docker-compose-composer.yml';
+dc service composer;
+dc opt "-u $(id -u):$(id -g)"
+
+if [ -n "${DEV_PROJECTDIR}" ]; then
+    dc opt "-w /app/${DEV_PROJECTDIR}"
+fi
+
+dc cmd "$*";
+

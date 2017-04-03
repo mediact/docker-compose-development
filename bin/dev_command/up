@@ -1,3 +1,4 @@
 
-docker-compose -f ../../docker-compose.yml -f ../../docker-compose.${DEV_PLATFORM}.yml up -d --no-recreate;
-exit $?;
+dc mode 'up -d --no-recreate';
+dc cmd "$*";
+

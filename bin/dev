@@ -4,25 +4,33 @@ init() {
 
     DEV_SELF=$(basename $0);
 
-    DEV_DIR=$(dirname $0);
+    DEV_DIR=$(realpath $(dirname $0));
     DEV_WORKDIR=$(dirname ${DEV_DIR});
     DEV_PROJECT=$(basename ${DEV_WORKDIR});
     DEV_USERDIR=${PWD};
 
     DEV_COMMANDDIR=${DEV_DIR}/dev_command;
 
-    DEV_WORKSPACE="`echo ${DEV_WORKDIR}/workspace | sed -se 's/\\//\\\\\//g'`";
-    DEV_DATADIR=`echo ${DEV_USERDIR} | sed -se "s/${DEV_WORKSPACE}//"`;
+    DEV_WORKSPACE="`echo ${DEV_WORKDIR}/workspace | sed -e 's/\\//\\\\\//g'`";
+    DEV_PROJECTDIR=`echo ${DEV_USERDIR} | sed -e "s/${DEV_WORKSPACE}\///"`;
 
+    DEV_SUDO='';
+    if [ -z "`groups | grep docker`" ]; then
+        DEV_SUDO='sudo';
+    fi
+
+    dc yml 'docker-compose.yml';
+    dc yml_if 'docker-compose-blackfire.yml' 'conf/blackfire';
+    dc yml_os
+
+    dc mode 'run --rm';
+
+    DEV_DOCKEROPTS='';
     DEV_COMMAND=$1;
-    shift;
-    DEV_COMMAND_OPTIONS=`echo "$*" | sed -se "s/${DEV_WORKSPACE}/\/data/" -se 's/\([\$\\\(\\\)<>]\)/\\\\\1/g'`;
 
-    if [ "${DEV_DATADIR}" == "${DEV_USERDIR}" ]; then
+    if [ "${DEV_PROJECTDIR=}" == "${DEV_USERDIR}" ]; then
         # Not in WORKSPACE
-        DEV_DATADIR='';
-    else
-        DEV_DATADIR="/data${DEV_DATADIR}";
+        DEV_PROJECTDIR='';
     fi
 
     # Change to command directory
@@ -41,21 +49,91 @@ init() {
     fi
 }
 
+dc() {
+
+    show() {
+        echo `getsudo`docker-compose ${DEV_YML} ${DEV_MODE} \
+            ${DEV_DOCKEROPTS} \
+            ${DEV_SERVICE} \
+            "${DEV_CMD}";
+    }
+
+    getsudo() {
+        # Check if user is in docker group
+        [ -n "${DEV_SUDO}" ] && echo -n ${DEV_SUDO}' ';
+    }
+
+    run() {
+        cmd=`show`;
+        ${cmd};
+        return $?
+    }
+
+    opt() {
+        DEV_DOCKEROPTS=${DEV_DOCKEROPTS}' '$*;
+    }
+
+    service() {
+        DEV_SERVICE=$*;
+    }
+
+    yml_if() {
+        local yml=$1;
+        shift;
+
+        while [ -n "$1" ]; do
+            if [ ! -e ${DEV_WORKDIR}/$1 ]; then
+                return 1;
+            fi
+            shift;
+        done
+
+        yml ${yml};
+        return 0;
+    }
+
+    yml_all() {
+        yml_if 'docker-compose-blackfireclient.yml' 'conf/blackfire';
+        yml 'docker-compose-capistrano.yml';
+        yml 'docker-compose-composer.yml';
+        yml 'docker-compose-dbclient.yml';
+        yml 'docker-compose-mytop.yml';
+    }
+
+    yml() {
+        if [ -n "`echo $DEV_YML | grep $1`" ]; then
+            return;
+        fi
+        DEV_YML=${DEV_YML}' -f '${DEV_WORKDIR}'/'$1;
+    }
+
+    yml_os() {
+        if [[ "$(uname)" == 'Darwin' ]]; then
+            DEV_YML=${DEV_YML}' -f '${DEV_WORKDIR}'/docker-compose-osx.yml';
+        else
+            DEV_YML=${DEV_YML}' -f '${DEV_WORKDIR}'/docker-compose-linux.yml';
+        fi
+    }
+
+    mode() {
+        DEV_MODE=$*;
+    }
+
+    cmd() {
+        DEV_CMD="$*";
+    }
+
+    $*;
+    return $?
+}
+
 exec() {
     # Load command
     # Can exit if implemented itself
-    . ./${DEV_COMMAND};
-
-    if [ -z "${DEV_SERVICE}" ]; then
-        exit 1;
-    fi
-
-    if [ -n "${DEV_USER}" ]; then
-        DEV_USER="-u ${DEV_USER} ";
-    fi
+    . ./${DEV_COMMAND} $*;
 
     # Execute command
-    eval docker-compose run --rm ${DEV_USER}${DEV_SERVICE} ${DEV_CMD};
+    dc run;
     exit $?;
 }
 
@@ -66,8 +144,9 @@ usage() {
 
 main() {
     init $@;
+    shift;
 
-    ${DEV_EXISTS} && exec || usage;
+    ${DEV_EXISTS} && exec $@ || usage;
 }
 
 main $@;

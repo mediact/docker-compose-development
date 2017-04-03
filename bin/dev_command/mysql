@@ -1,3 +1,6 @@
 
-DEV_SERVICE=dbclient;
-DEV_CMD="mysql --host=db -u${USER} ${DEV_COMMAND_OPTIONS}";
+dc yml docker-compose-dbclient.yml;
+dc service dbclient;
+
+dc cmd mysql "-h db -u ${USER} $*";
+

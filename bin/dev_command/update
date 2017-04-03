@@ -1,13 +1,14 @@
 
+# Collect images to update
+images=`. images`;
+
+dp() {
+    echo `dc getsudo`'docker pull '$1;
+}
 
 # Get latest releases
-docker images | grep -vE '(REPOSITORY|<none>|'${DEV_PROJECT}'_)' | awk '{ print $1":"$2; }' | \
-    while read a; do
-        docker pull $a 2>/dev/null;
-    done
+for image in ${images}; do
+    `dp $image`;
+done
+exit 0;
 
-# Delete unused old images
-docker images | grep '<none>' | awk '{ print $3; }' | \
-    while read a; do
-        docker rmi $a;
-    done

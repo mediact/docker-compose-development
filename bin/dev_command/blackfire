@@ -1,3 +1,11 @@
 
-DEV_SERVICE=blackfireclient;
-DEV_CMD="blackfire ${DEV_COMMAND_OPTIONS}";
+dc yml_if 'docker-compose-blackfireclient.yml' 'conf/blackfire';
+if [ $? -ne 0 ]; then
+    echo 'Blackfire not initialized';
+    exit 1;
+fi
+
+dc service blackfireclient;
+
+dc cmd blackfire "$*";
+
