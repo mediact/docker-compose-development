@@ -9,7 +9,7 @@ upstream mailcatch {
 
 server {
     listen 80;
-    server_name mail.dev;
+    server_name mail.dev.mediacthq.nl;
 
     location / {
         proxy_pass http://mailcatch;

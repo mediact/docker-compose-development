@@ -7,5 +7,7 @@ ARG UID=1000
 RUN apk add --no-cache openssh-client && \
     adduser -u $UID -g $GID -h /app -DHs /bin/nologin app
 
+RUN composer self-update
+
 WORKDIR /app
 
