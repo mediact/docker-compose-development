@@ -9,6 +9,8 @@ redis:
 
 mailcatch:
     image: mailhog/mailhog
+    ports:
+        - 127.0.0.1:8025:8025
 
 php5:
     build: php5
