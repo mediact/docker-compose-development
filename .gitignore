@@ -1,3 +1,9 @@
-/workspace
-/mysql
-
+/.idea/
+/workspace/*
+!/workspace/.ssh/
+/workspace/.ssh/*
+!/workspace/.ssh/.gitkeep
+!/workspace/.composer/
+/workspace/.composer/*
+!/workspace/.composer/.gitkeep
+/mysql/
