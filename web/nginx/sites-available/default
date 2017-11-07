@@ -7,7 +7,7 @@ server {
 }
 
 server {
-    listen 443;
+    listen 443 ssl http2;
     server_name .dev.mediacthq.nl;
 
     ssl on;
@@ -27,7 +27,7 @@ server {
 }
 
 server {
-    listen 443;
+    listen 443 ssl http2;
     server_name .php5.dev.mediacthq.nl;
 
     ssl on;
