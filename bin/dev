@@ -21,16 +21,23 @@ init() {
 
     dc yml 'docker-compose.yml';
     dc yml_if 'docker-compose-blackfire.yml' 'conf/blackfire';
+    dc yml_if 'docker-custom.yml' 'docker-custom.yml';
     dc yml_os
 
     dc mode 'run --rm';
 
     DEV_DOCKEROPTS='';
     DEV_COMMAND=$1;
+    DEV_HOSTNAME='';
 
-    if [ "${DEV_PROJECTDIR=}" == "${DEV_USERDIR}" ]; then
+    if [ "${DEV_PROJECTDIR}" == "${DEV_USERDIR}" ]; then
         # Not in WORKSPACE
         DEV_PROJECTDIR='';
+    else
+        DEV_HOSTNAME=`echo ${DEV_PROJECTDIR} | sed -e 's/\//\./g' -e 's/^\([^\.]*\.[^\.]*\)\.\{0,1\}.*$/\\1.dev/'`;
+        if [ ".." != "`echo ${DEV_HOSTNAME} | sed -e 's/[^\.]//g'`" ]; then
+            DEV_HOSTNAME='';
+        fi
     fi
 
     # Change to command directory
@@ -41,11 +48,6 @@ init() {
     DEV_EXISTS=false;
     if [ -n "${DEV_COMMAND}" ] && [ -f "${DEV_COMMAND}" ]; then
         DEV_EXISTS=true;
-    fi
-
-    DEV_PLATFORM='linux'
-    if [[ "$(uname)" == 'Darwin' ]]; then
-       DEV_PLATFORM='osx'
     fi
 }
 
@@ -94,10 +96,10 @@ dc() {
 
     yml_all() {
         yml_if 'docker-compose-blackfireclient.yml' 'conf/blackfire';
-        yml 'docker-compose-capistrano.yml';
-        yml 'docker-compose-composer.yml';
         yml 'docker-compose-dbclient.yml';
         yml 'docker-compose-mytop.yml';
+        yml 'docker-compose-ngrok.yml';
+        yml 'docker-compose-ctop.yml';
     }
 
     yml() {

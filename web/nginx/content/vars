@@ -3,7 +3,7 @@
 set $customer "default";
 set $project "default";
 
-if ( $host ~ "^([^\.]+)\.([^\.]+)\..*dev.mediacthq.nl$"  ) {
+if ( $host ~ "^([^\.]+)\.([^\.]+).*[DOMAINSUFFIX]$"  ) {
      set $customer "$1";
      set $project "$2";
 }
@@ -21,4 +21,7 @@ if ( -e /data/$customer/$project/pub ) {
 }
 if ( -e /data/$customer/$project/web ) {
     set $htdocs "web";
+}
+if ( -e /data/$customer/$project/magento ) {
+    set $htdocs "magento";
 }

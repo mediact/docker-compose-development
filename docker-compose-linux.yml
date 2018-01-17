@@ -1,12 +1,18 @@
-db:
+version: '2'
+
+services:
+  php:
+    volumes:
+    - ./workspace:/data
+  php5:
+    volumes:
+    - ./workspace:/data
+  php71:
+    volumes:
+    - ./workspace:/data
+  web:
+    volumes:
+    - ./workspace:/data:ro
+  db:
     volumes:
         - ./mysql:/var/lib/mysql
-php5:
-    volumes:
-        - ./workspace:/data
-php7:
-    volumes:
-        - ./workspace:/data
-web:
-    volumes:
-        - ./workspace:/data:ro

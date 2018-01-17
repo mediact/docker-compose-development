@@ -1,14 +1,14 @@
 server {
-    listen 80;
-    server_name .dev.mediacthq.nl;
+    listen 80 default_server;
+    server_name [DOMAINSUFFIX];
 
     include "upstream/php7";
     include "content/default";
 }
 
 server {
-    listen 443;
-    server_name .dev.mediacthq.nl;
+    listen 443 ssl http2 default_server;
+    server_name [DOMAINSUFFIX];
 
     ssl on;
     ssl_certificate certs/server.crt;
@@ -20,15 +20,15 @@ server {
 
 server {
     listen 80;
-    server_name .php5.dev.mediacthq.nl;
+    server_name .php5[DOMAINSUFFIX];
 
     include "upstream/php5";
     include "content/default";
 }
 
 server {
-    listen 443;
-    server_name .php5.dev.mediacthq.nl;
+    listen 443 ssl http2;
+    server_name .php5[DOMAINSUFFIX];
 
     ssl on;
     ssl_certificate certs/server.crt;
@@ -38,3 +38,23 @@ server {
     include "content/default";
 }
 
+
+server {
+    listen 80;
+    server_name .php71[DOMAINSUFFIX];
+
+    include "upstream/php71";
+    include "content/default";
+}
+
+server {
+    listen 443 ssl http2;
+    server_name .php71[DOMAINSUFFIX];
+
+    ssl on;
+    ssl_certificate certs/server.crt;
+    ssl_certificate_key certs/server.key;
+
+    include "upstream/php71";
+    include "content/default";
+}
