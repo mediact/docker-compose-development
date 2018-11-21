@@ -7,5 +7,7 @@ ARG UID=1000
 RUN groupmod -g $GID app && \
     usermod -g $GID -u $UID app
 
+COPY config/php.ini /usr/local/etc/php/
+
 RUN apt-get update && apt-get install -y libmagickwand-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*
 RUN pecl install imagick && docker-php-ext-enable imagick

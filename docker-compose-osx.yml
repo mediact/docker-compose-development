@@ -1,12 +1,23 @@
-db:
+version: '2'
+
+services:
+  php:
     volumes:
-        - dockerdev-mysql-volume:/var/lib/mysql:rw
-php5:
+    - web-sync:/data:rw
+  php5:
     volumes:
-        - web-sync:/data:rw
-php7:
+    - web-sync:/data:rw
+  php71:
     volumes:
-        - web-sync:/data:rw
-web:
+    - web-sync:/data:rw
+  web:
     volumes:
-        - web-sync:/data:ro
+    - web-sync:/data:ro
+  db:
+    volumes:
+    - dockerdev-mysql-volume:/var/lib/mysql:rw
+volumes:
+  web-sync:
+    external: true
+  dockerdev-mysql-volume:
+    external: true

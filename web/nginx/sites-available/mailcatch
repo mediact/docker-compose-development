@@ -9,7 +9,8 @@ upstream mailcatch {
 
 server {
     listen 80;
-    server_name mail.dev.mediacthq.nl;
+    listen 443 ssl http2;
+    server_name mail[DOMAINSUFFIX];
 
     location / {
         proxy_pass http://mailcatch;

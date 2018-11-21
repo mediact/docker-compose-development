@@ -1,18 +1,7 @@
 server {
     listen 80;
-    server_name *.symfony.dev.mediacthq.nl;
-
-    include "upstream/php7";
-    include "content/symfony";
-}
-
-server {
-    listen 443;
-    server_name *.symfony.dev.mediacthq.nl;
-
-    ssl on;
-    ssl_certificate certs/server.crt;
-    ssl_certificate_key certs/server.key;
+    listen 443 ssl http2;
+    server_name *.symfony[DOMAINSUFFIX];
 
     include "upstream/php7";
     include "content/symfony";
@@ -20,21 +9,18 @@ server {
 
 server {
     listen 80;
-    server_name *.symfony.php5.dev.mediacthq.nl;
+    listen 443;
+    server_name *.symfony.php5[DOMAINSUFFIX];
 
     include "upstream/php5";
     include "content/symfony";
 }
 
 server {
+    listen 80;
     listen 443;
-    server_name *.symfony.php5.dev.dev.mediacthq.nl;
+    server_name *.symfony.php71[DOMAINSUFFIX];
 
-    ssl on;
-    ssl_certificate certs/server.crt;
-    ssl_certificate_key certs/server.key;
-
-    include "upstream/php5";
+    include "upstream/php71";
     include "content/symfony";
 }
-
