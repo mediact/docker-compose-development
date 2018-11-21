@@ -1,13 +1,16 @@
 version: '2'
 
 services:
-  php:
+  php70:
     volumes:
     - web-sync:/data:rw
-  php5:
+  php56:
     volumes:
     - web-sync:/data:rw
   php71:
+    volumes:
+    - web-sync:/data:rw
+  php72:
     volumes:
     - web-sync:/data:rw
   web:

@@ -1,10 +1,13 @@
 
-dc service php;
-dc opt '-T';
+dc service ${DEV_PHP};
 dc opt "-u $(id -u):$(id -g)"
-
-if [ -n "${DEV_PROJECTDIR}" ]; then
-    dc opt "-w /data/${DEV_PROJECTDIR}"
+dc opt '--no-deps';
+if [ ! ${DEV_INTERACTIVE} ]; then
+    dc opt '-T';
 fi
 
-dc cmd magerun2 "$*";
+if [ -n "${DEV_PROJECTPATH}" ]; then
+    dc opt "-w /data/${DEV_PROJECTPATH}"
+fi
+
+dc cmd magerun2 "$@";
