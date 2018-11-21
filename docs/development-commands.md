@@ -6,6 +6,8 @@ To control your docker environment.
 
 - `build [IMAGE]`
   re-build a image
+- `changephp`
+  change current php version
 - `config`
   show docker-compose configuration
 - `down`
@@ -26,6 +28,10 @@ To control your docker environment.
   alias for `dev update && dev build && dev down && dev up`
 - `restart [CONTAINER]`
   restart all or a specific container
+- `run`
+  run one-off commands in new container
+- `setup`
+  Run setup for defaults
 - `start`
   start all exising container, will not create them if they don't exist(use `up` instead)
 - `status`
@@ -61,6 +67,10 @@ There are also useful tools.
   monitor your running containers and see how much resources they are eating
 - `php [OPTIONS]`
   run php commands
+- `php-ext-enable [EXTENSION]`
+  temporarily enable module for running container, use with `dev exec php php -v`
+- `php-ext-disable [EXTENSION]`
+  temporarily diable module for running container, use with `dev exec php php -v`
 
 You can run these commands from within your workspace directories.
 For example: `cd workspace/test/project/htdocs` `../../../../bin/dev php info.php` (or `dev php info.php` if you've added the bin directory to your path)

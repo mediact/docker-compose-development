@@ -1,13 +1,16 @@
 version: '2'
 
 services:
-  php:
+  php70:
     volumes:
     - ./workspace:/data
-  php5:
+  php56:
     volumes:
     - ./workspace:/data
   php71:
+    volumes:
+    - ./workspace:/data
+  php72:
     volumes:
     - ./workspace:/data
   web:

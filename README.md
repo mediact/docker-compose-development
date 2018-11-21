@@ -26,6 +26,7 @@ We follow a [Code of Conduct](docs/code-of-conduct.md).
 		* [Hosts and file structure](docs/hosts-and-file-structure.md)
 		* [Sharing with the world](docs/sharing-with-the-world-via-ngrok.md)
     * [F.A.Q.](docs/faq.md)
+    * [UFW firewall](docs/ufw-firewall.md)
 
 ## Prerequisites
 Before continuing you must have the following installed and working correctly:
@@ -41,6 +42,25 @@ Before continuing you must have the following installed and working correctly:
  - Make sure that port 80/443 and 3306 are not being used by other services.
 `sudo netstat -tupln|egrep '80|443|3306'`
 
+**WSL users** 
+- Setup docker using [https://nickjanetakis.com/blog/setting-up-docker-for-windows-and-wsl-to-work-flawlessly](https://nickjanetakis.com/blog/setting-up-docker-for-windows-and-wsl-to-work-flawlessly)
+- should setup the SSH_AUTH_SOCK variable
+Add the following to `~/.bashrc`:
+```
+# ssh-agent configuration
+if [ -z "$(pgrep ssh-agent)" ]; then
+    rm -rf /tmp/ssh-*
+    eval $(ssh-agent -s) > /dev/null
+else
+    export SSH_AGENT_PID=$(pgrep ssh-agent)
+    export SSH_AUTH_SOCK=$(find /tmp/ssh-* -name agent.*)
+fi
+
+if [ "$(ssh-add -l)" == "The agent has no identities." ]; then
+    ssh-add
+fi
+```
+
 # How to get started
 Make sure that you have the prerequisites installed and running correctly before proceeding.
 
@@ -49,23 +69,20 @@ Make sure that you have the prerequisites installed and running correctly before
 ```
 git clone git@github.com:JeroenBoersma/docker-compose-development.git development
 ```
- 2. Create a new persistent data volume with:
+ 2. Run `bin/dev setup`
+This will automaticly create a root user with a random password and adds your user with restricted rights.
+
+
+* persistant MySQL on a location of your choice.
+If you were already using this repository before (or want a local directory), you can map the existing volume with:
 ```
-docker volume create --name dockerdev-mysql-volume
-```
-Or, if you already were using this repository before (or want a local directory), you can map the existing volume with:
-```
+mkdir -p mysql;
 docker volume create -o 'type=none' -o 'device='${PWD}'/mysql' -o 'o=bind' dockerdev-mysql-volume
 ```
- 3. Configure you MySQL credentials by copying [conf/mysql.dist](conf/mysql.dist) to `conf/mysql` and setting your strong awesome password.
- 4. Start your containers!
- ```
- ./bin/dev up
- ```
- Or, if you are on OSX:
- ```
- docker-sync start
- ```
+Or, if you are on OSX:
+```
+docker-sync start
+```
 
 A optional, but recommended, step to take is to add the provided `.bin/dev` command to your system so you can use its commands anywhere you like.
 
@@ -85,6 +102,9 @@ Only applies if you have DNSMASQ installed, otherwiste continue to use the hostf
 Create a file `/etc/dnsmasq.d/dev.conf` and copy the following as its content:
 `address=/.localhost/127.0.0.1`
 
+#### For Windows
+Use Acrylic DNS Proxy. For more information check the website [http://mayakron.altervista.org/wikibase/show.php?id=AcrylicHome](http://mayakron.altervista.org/wikibase/show.php?id=AcrylicHome)
+
 ### Or by using the hostfile
 Add a hostname entry for each of your projects manually to `/etc/hosts`, e.g.:
 `127.0.0.1 mail.localhost`
@@ -95,6 +115,10 @@ You should now be able to browse to `http://test.project.localhost/info.php` and
 ## 3). Now, setup your projects!
 Inside the development folder you will find a folder called `workspace`. The folders follow a certain structure, as described below:
 `customer/project/htdocs`
+
+> For **WSL**
+>
+> Docker for Windows automatically mounts to `C:\workspace`. You'll find your workspace there. To change this, update `docker-compose-wsl.yml`
 
 You will notice that this has a 1-on-1 relation to the hostname provided in your hostfile:
 `workspace/test/project/htdocs` => `https://test.project.localhost/`
